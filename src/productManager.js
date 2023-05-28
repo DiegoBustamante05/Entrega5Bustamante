@@ -59,11 +59,11 @@ export class ProductManager {
             console.log("title, description, code, and category must be a string") 
             return false;
         }else if (typeof price != "number" || typeof stock != "number" ){         
-            console.log("price and number must be a number")
+            console.log("price and stock must be a number")
             return false;
-        }else if (typeof status != "boolean"){         
-            console.log("status must be a boolean")
-            return false;
+        //}else if (typeof status != "boolean"){         
+            //console.log("status must be a boolean")
+            //return false;
         }else if(await this.#getProductByCode(code)){
             console.log("The code entered has already been used, please enter another") 
             return false;
