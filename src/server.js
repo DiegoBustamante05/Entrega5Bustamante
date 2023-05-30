@@ -53,6 +53,16 @@ socketServer.on("connection", (socket) =>{
             console.log(error);
         }
     });
+    socket.on("id-to-delete", async (id) => {
+        try {
+            console.log("el id es " + id)
+            await productManager.deleteProduct(id);
+            const productsListDeleted = await productManager.getProducts();
+            socketServer.emit("products-deleted", { productsListDeleted });
+        } catch (error){
+            console.log(error);
+        }
+    });
 });
 
 
