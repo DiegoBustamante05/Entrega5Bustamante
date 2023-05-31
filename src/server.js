@@ -79,3 +79,6 @@ productManager.addProduct({
     "category": "prueba",
     "status": true
 });
+
+
+

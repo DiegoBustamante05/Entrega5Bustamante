@@ -6,9 +6,9 @@ export const routerCarts = express.Router();
 routerCarts.use(express.json());
 routerCarts.use(express.urlencoded({ extended: true }));
 
-routerCarts.get("/:cid", (req, res) => {
+routerCarts.get("/:cid", async (req, res) => {
     const cartId = req.params.cid;
-    const cart = cartManager.getCart(cartId);
+    const cart = await cartManager.getCart(cartId);
 
     if (cart) {
         return res.status(201).json({
@@ -25,11 +25,11 @@ routerCarts.get("/:cid", (req, res) => {
     }
 });
 
-routerCarts.post("/:cid/product/:pid", (req, res) => {
+routerCarts.post("/:cid/product/:pid", async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid
-    const productAddToCart = cartManager.addItemToCart(cartId, productId);
-    const cart = cartManager.getCart(cartId);
+    const productAddToCart = await cartManager.addItemToCart(cartId, productId);
+    const cart = await cartManager.getCart(cartId);
 
     if (productAddToCart) {
         return res.status(201).json({

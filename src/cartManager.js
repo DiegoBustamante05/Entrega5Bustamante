@@ -37,24 +37,24 @@ export class CartManager {
     }
 
     async addItemToCart(cartId, productId) {
-        const fileCarts =await fs.promises.readFile(this.pathCarts, "utf-8")
+        const fileCarts = await fs.promises.readFile(this.pathCarts, "utf-8")
         const fileCartsParse = JSON.parse(fileCarts);
         this.carts = fileCartsParse;
         
-        productId = parseInt(productId)
-        cartId = parseInt(cartId)
+        const productIdToNumber = parseInt(productId)
+        const cartIdToNumber = parseInt(cartId)
 
-        const allProducts = productManager.getProducts();
-        const productFound = allProducts.find((product) => product.id == productId);
+        const allProducts = await productManager.getProducts();
+        const productFound = allProducts.find((product) => product.id == productIdToNumber);
         if (productFound) {
-            let findCart = fileCartsParse.find((cart) => cart.idCarrito == cartId);
+            let findCart = fileCartsParse.find((cart) => cart.idCarrito == cartIdToNumber);
             
             if (!findCart) {
-                this.createCart(cartId);
-                findCart = fileCartsParse.find((cart) => cart.idCarrito == cartId);
+                this.createCart(cartIdToNumber);
+                findCart = fileCartsParse.find((cart) => cart.idCarrito == cartIdToNumber);
             }
 
-            const foundProductInCart = findCart.productos.find((product) => product.idProduct === productId);
+            const foundProductInCart = findCart.productos.find((product) => product.idProduct === productIdToNumber);
 
             if (foundProductInCart) {
                 foundProductInCart.quantity++;
@@ -64,7 +64,7 @@ export class CartManager {
                 return true
             } else {
                 const products = {
-                    idProduct: productId,
+                    idProduct: productIdToNumber,
                     quantity: 1,
                 }
                 findCart.productos.push(products)
