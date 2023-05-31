@@ -101,15 +101,26 @@ export class ProductManager {
     }
 
 
-    async updateProduct(id, {title, description, price, thumbnail, code, stock, category, status}) {
+    async updateProduct(id, productToUpdate) {
         const prodFs = await fs.promises.readFile(this.path, "utf-8");
         this.products = JSON.parse(prodFs)
+
+        let title = productToUpdate.title;
+        let description = productToUpdate.description;
+        let price = productToUpdate.price;
+        let thumbnail = productToUpdate.thumbnail;
+        let code = productToUpdate.code;
+        let stock = productToUpdate.stock;
+        let category = productToUpdate.category;
+        let status = productToUpdate.status;
+
+
+
         let found = this.products.find(p => p.id === id)
-        const codeProduct = code
         if (found) {
             if(title === undefined || title === null || title === '' || description === undefined || description === null || description === '' || price === undefined || price === null || price === '' || stock === undefined || stock === null || stock === '') {
                 console.log('Error, you must complete all fields');      
-            }else if(await this.#getProductByCode(codeProduct)){
+            }else if(await this.#getProductByCode(code)){
                 console.log("The code entered has already been used, please enter another")
             }else {
             this.products[id] = Object.assign(found, {title, description, price, thumbnail, code, stock, category, status})
