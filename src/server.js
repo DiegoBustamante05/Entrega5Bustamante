@@ -70,15 +70,4 @@ socketServer.on("connection", (socket) =>{
 
 
 
-productManager.addProduct({
-    "title": "Producto 6",
-    "description": "Producto 6 Vistas",
-    "price": 6000,
-    "code": "ABC600",
-    "stock": 60,
-    "category": "prueba",
-    "status": true
-});
-
-
 

@@ -1,3 +1,4 @@
+import { error } from 'console';
 import fs from 'fs';
 
 
@@ -24,7 +25,7 @@ export class ProductManager {
             console.log(found)
             return found;
         } else {
-            console.log("Not found")
+            throw new Error("Not found")
         }
     }
     async #getProductByCode(code){
@@ -41,8 +42,6 @@ export class ProductManager {
         const prodFs = await fs.promises.readFile(this.path, "utf-8");
         this.products = JSON.parse(prodFs)
 
-
-
         let title = newProduct.title;
         let description = newProduct.description;
         let price = newProduct.price;
@@ -53,27 +52,22 @@ export class ProductManager {
         let status = newProduct.status;
 
         if(title === undefined || title === null || title === '' || description === undefined || description === null || description === '' || price === undefined || price === null || price === '' || code === undefined || code === null || code === '' || stock === undefined || stock === null || stock === '' || category === undefined || category === null || category === '') {
-            console.log('Error, you must complete all fields');
-            return false;
+            throw new Error('Error, you must complete all fields');
         }else if (typeof title != "string" || typeof description != "string" || typeof code != "string" || typeof category != "string" ){         
-            console.log("title, description, code, and category must be a string") 
-            return false;
+            throw new Error("title, description, code, and category must be a string") 
         }else if (typeof price != "number" || typeof stock != "number" ){         
-            console.log("price and stock must be a number")
-            return false;
+            throw new Error("price and stock must be a number")
         //}else if (typeof status != "boolean"){         
             //console.log("status must be a boolean")
             //return false;
         }else if(await this.#getProductByCode(code)){
-            console.log("The code entered has already been used, please enter another") 
-            return false;
+            throw new Error("The code entered has already been used, please enter another") 
         }else {
             newProduct = {title, description, price, thumbnail, code, stock, category, status, id: this.id++};
             this.products.push(newProduct)
             const productsString = JSON.stringify(this.products)
             await fs.promises.writeFile(this.path, productsString)
             console.log(newProduct)
-            return true
         }
     }
     
@@ -86,8 +80,7 @@ export class ProductManager {
         );
     
         if (positionProduct == -1) {
-            console.log("Product not found");
-            return false;
+            throw new Error("Product not found");
         } else {
             delete fileProductsParse[positionProduct];
             const productsDelete = fileProductsParse.filter(
@@ -96,7 +89,6 @@ export class ProductManager {
     
         const productsString = JSON.stringify(productsDelete);
         await fs.promises.writeFile(this.path, productsString);
-        return true;
         }
     }
 
@@ -119,9 +111,9 @@ export class ProductManager {
         let found = this.products.find(p => p.id === id)
         if (found) {
             if(title === undefined || title === null || title === '' || description === undefined || description === null || description === '' || price === undefined || price === null || price === '' || stock === undefined || stock === null || stock === '') {
-                console.log('Error, you must complete all fields');      
+                throw new Error('Error, you must complete all fields');      
             }else if(await this.#getProductByCode(code)){
-                console.log("The code entered has already been used, please enter another")
+                throw new Error("The code entered has already been used, please enter another")
             }else {
             this.products[id] = Object.assign(found, {title, description, price, thumbnail, code, stock, category, status})
             const productsString = JSON.stringify(this.products)
@@ -131,7 +123,7 @@ export class ProductManager {
             return(this.products)
             }
         } else {
-            console.log("Product not found")
+            throw new Error("Product not found")
         }
     }
 }

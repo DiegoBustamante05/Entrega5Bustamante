@@ -39,49 +39,49 @@ routerProducts.get("/", async (req, res) => {
 });
 
 routerProducts.get("/:pid", async (req, res) => {
-    let productId = req.params.pid;
-    let productFound = await productManager.getProductById(productId);
-    if (!productFound) {
+    try {
+        let productId = req.params.pid;
+        let productFound = await productManager.getProductById(productId);
+        res.status(200).send({
+            status: "success",
+            data: productFound,
+        })   
+    } catch (error) {
         return res.status(404).send({
-            status: "error",
-            data: "Product ID not found",
-        });
-    }else
-    res.status(200).send({
-        status: "success",
-        data: productFound,
-    });
+            error: 'Product not found'
+        })
+    }
 });
 
 routerProducts.post("/", async (req, res) => {
-    const newProduct = req.body;
-    const productCreate = await productManager.addProduct(newProduct)
-    if (productCreate){
+    try {
+        const newProduct = req.body;
+        await productManager.addProduct(newProduct)
         return res.status(201).json({
             status: "success",
             msg: "Product created",
-            data: productCreate,
+            data: newProduct,
         });
-    } else {
-        return res.status(404).json({
-            status: "error",
-            msg: "could not be created",
-            data: {},
-        });
+    } catch (error) {
+        console.log(error)
+        return res.status(404).send({
+            error: 'Product not added'
+        })
     }
 })
 
 
 routerProducts.delete("/:pid", async (req, res) => {
-    const idToDelete = req.params.pid;
-    const deleted = await productManager.deleteProduct(idToDelete);
-
-    if (deleted) {
+    try {
+        const idToDelete = req.params.pid;
+        await productManager.deleteProduct(idToDelete);
+        console.log("Product "+ idToDelete + " deleted")
         return res.status(200).send({ 
             status: "success", 
             msg: "Product deleted",
         })
-    } else {
+    } catch (error) {
+        console.log(error)
         return res.status(404).json({
             status: "error",
             msg: "could not be deleted",
@@ -92,17 +92,18 @@ routerProducts.delete("/:pid", async (req, res) => {
 
 
 routerProducts.put("/:pid", async (req, res) => {
-    const id = parseInt(req.params.pid)
-    const newProduct = req.body;
-    const productCreate = await productManager.updateProduct(id, newProduct)
-    
-    if (productCreate) {
+    try {
+        const id = parseInt(req.params.pid);
+        const newProduct = req.body;
+        await productManager.updateProduct(id, newProduct);
+        console.log("Product "+ id + " was modified")
         return res.status(201).json({
             status: "success",
             msg: "successfully modified product",
             data: newProduct,
         });
-    } else {
+    } catch (error) {
+        console.log(error);
         return res.status(404).json({
             status: "error",
             msg: "could not be modified, check the entered fields",
